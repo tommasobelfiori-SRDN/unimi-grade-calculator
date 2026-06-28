@@ -111,6 +111,8 @@ const TRANSLATIONS = {
     title: "Calcolatore Voto di Laurea",
     subtitle: "Università degli Studi di Milano · valido per tutte le facoltà",
     tagline: "Fatto da uno studente UniMi, per gli studenti UniMi",
+    disclaimerHeader:
+      "Sito non ufficiale, non affiliato all'Università degli Studi di Milano. Strumento puramente indicativo.",
     themeDark: "Scuro",
     themeLight: "Chiaro",
     importTitle: "Importa la tua carriera (PDF o screenshot)",
@@ -209,6 +211,8 @@ const TRANSLATIONS = {
     title: "Graduation Grade Calculator",
     subtitle: "University of Milan · valid for all faculties",
     tagline: "Made by a UniMi student, for UniMi students",
+    disclaimerHeader:
+      "Unofficial tool, not affiliated with the University of Milan. For guidance only.",
     themeDark: "Dark",
     themeLight: "Light",
     importTitle: "Import your transcript (PDF or screenshot)",
@@ -929,6 +933,21 @@ export default function CalcolatoreVotoLaurea() {
             </div>
           </div>
           <p style={S.tagline}>{t.tagline}</p>
+          <div
+            style={{
+              marginTop: 10,
+              display: "inline-block",
+              fontSize: 11,
+              fontWeight: 600,
+              color: "#fff",
+              background: "rgba(255,255,255,0.14)",
+              border: "1px solid rgba(255,255,255,0.32)",
+              borderRadius: 999,
+              padding: "5px 12px",
+            }}
+          >
+            ⚠️ {t.disclaimerHeader}
+          </div>
         </div>
 
         {/* ---- Import carriera ---- */}
