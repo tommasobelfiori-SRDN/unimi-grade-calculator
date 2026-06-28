@@ -14,10 +14,26 @@
 | **Studi Umanistici** | 6 / 6 | non specificato (≈30) | nessun bonus documentato (in corso/lodi/Erasmus). Lode a 110 unanime. | [Linee guida Facoltà (17-06-2022)](https://www.unimi.it/sites/default/files/2022-06/linee%20guida%20facolt%C3%A0%20pubblicate.pdf) |
 | **Medicina** | prof. sanitarie: tesi 10 (+10 prova abilitante) / Medicina&Chirurgia: tesi ~7 | non specificato (≈30) | Med&Chir (2025): premialità fino a +7 (in corso +1, lodi 0.3/cad max 2, ricerca extra +2, OSCE +2); **lode a ≥113**. Prof. sanitarie: lode = più lodi in carriera. | [Med&Chir 2025](https://www.unimi.it/sites/default/files/2025-10/DCA%20LM-41%20Medicina%20e%20chirurgia%20-%20polo%20centrale%20(2025).pdf) · [Infermieristica 2022](https://infermieristica.cdl.unimi.it/sites/ld64/files/2022-07/D64%20L-SNT1%20infermieristica%202022.pdf) |
 | **Scienze del Farmaco** | tesi: sperimentale 10 / semisperimentale 7.5 / compilativa 5 | non specificato (≈30) | in corso +1 (ciclo unico/tri) o +0.5 (mag 2 anni); Erasmus +1; tesi all'estero +2. **Lode**: base + bonus ≥ **102.00** (non arrotondato; punti tesi esclusi dal check). | [Calcolo voto laurea (luglio 2025)](https://ctf.cdl.unimi.it/sites/le25/files/2025-04/Calcolo%20voto%20laurea-luglio%202025.pdf) |
-| **Scienze Agrarie e Alimentari** | 6 / 10 (mag include +1 estero) | tri **33**, mag non specificato | tri: in corso +3 (1ª/2ª sessione) o +1 (3ª); estero +1/+2 se in corso. | [Regolamento voto laurea (24-02-2022)](https://www.unimi.it/sites/default/files/2022-07/Regolamento_votolaurea_Agraria.pdf) |
+| **Scienze Agrarie e Alimentari** | 6 / 10 (mag include +1 estero) | tri **33**, mag non specificato | tri: in corso +3 (1ª/2ª sessione = estiva/autunnale) o +1 (3ª = invernale); estero +1/+2 se in corso. Mag: nessun bonus in corso. | [Regolamento voto laurea (24-02-2022)](https://scienzeagrarie.cdl.unimi.it/sites/lg28/files/2022-07/Regolamento_votolaurea_Agraria_3.pdf) ⚠️ (il file con nome "Agraria" su www.unimi.it è in realtà il regolamento di Veterinaria) |
 | **Medicina Veterinaria** | ciclo unico LM-42: tesi 8 + discussione 2 (=10) | non specificato (≈30) | premialità carriera max +2 (in corso +1, Erasmus +1, volontariato +1). Lode a 110 unanime. Altri corsi vet. differiscono. | [Regolamento prova finale (09-05-2024)](https://veterinaria.cdl.unimi.it/sites/lh15/files/2024-05/Regolamento%20della%20prova%20finale%20(immatricolati%20a%20partire%20dall'aa%202023-24).pdf) |
-| **Scienze Motorie** | 8 / 12 | non pubblicato (≈30) | non pubblicati nei documenti del corso. Base/lode seguono regola generale d'Ateneo. | [Manifesto triennale 2025/26](https://apps.unimi.it/files/manifesti/ita_manifesto_Z05of3_2026.pdf) |
+| **Scienze Motorie** | 8 / 12 | **33** | in corso (SOLO tri): +3 estiva/autunnale, +1 invernale (3° anno); Erasmus/mobilità +1 (tutti i livelli). Le regole sono nel documento di **Facoltà** "Attribuzione punteggi", non nella pagina del corso. | [Attribuzione punteggi (25/11/2024)](https://gov.cdl.unimi.it/sites/lb66/files/2025-03/Attribuzione_punteggi_prove_finali_%28v._dic%202024%29_1.pdf) |
 | **Mediazione Linguistica e Culturale** | 3 / (n.d.) | **31** | tri (K21-KAB): in corso +1. Lode a 110 + relatore + ≥1 lode in carriera. | [Laurearsi K21-KAB](https://mediazione.cdl.unimi.it/it/studiare/laurearsi/laurearsi-k21-kab) |
+
+## Bonus "laurea in corso" e dipendenza dalla sessione (riepilogo)
+
+| Facoltà | Dipende dalla sessione? | Regola (triennale salvo diverso) |
+|---|---|---|
+| SPES | **Sì** (solo tri) | +3 estiva/autunnale, +1 invernale (3° anno). Magistrale: nessuno. |
+| Scienze Motorie | **Sì** (solo tri) | +3 estiva/autunnale, +1 invernale (3° anno). Magistrale: nessuno. |
+| Scienze Agrarie | **Sì** (solo tri) | +3 1ª/2ª sessione (estiva/autunnale), +1 3ª (invernale). Magistrale: nessuno. |
+| Medicina e Chirurgia | **Sì** (gate) | +1 solo se ti laurei in sessione estiva/autunnale (invernale solo con malattia/maternità). |
+| Scienze del Farmaco | **Sì** (gate) | +1 (tri/ciclo unico) o +0,5 (mag 2 anni) solo se entro la sessione di marzo/aprile. |
+| Veterinaria – Produzioni Animali (tri/mag) | **Sì** | +3 1ª/2ª sessione, +2 3ª. |
+| Giurisprudenza | No | +1 fisso (in corso entro l'ultima sessione dell'ultimo anno). Ciclo unico: +1 in corso **oppure** Erasmus (max 1). |
+| Veterinaria – ciclo unico LM-42 | No | +1 fisso (qualsiasi sessione); premialità carriera tot. max +2. |
+| Mediazione | No | +1 fisso (entro la durata normale). |
+| Studi Umanistici | — | **Nessun bonus** in corso. |
+| Scienze e Tecnologie | No (mai per sessione) | Varia per corso: alcuni +1/+2 fisso (Biotecnologia, Chimica), Matematica per anni di ritardo; molti nessuno. |
 
 Note generali:
 - "30 e lode = 33" è **specifico** di alcune facoltà (SPES, Agraria triennale); molte altre lo contano 30 o 31, o non lo specificano. Non è una regola universale UniMi.

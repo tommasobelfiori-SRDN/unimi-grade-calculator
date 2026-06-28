@@ -155,6 +155,14 @@ const TRANSLATIONS = {
     honorsNote: "La lode è assegnata con voto unanime della commissione.",
     bonusTitle: "Bonus",
     sessionLabel: "Sessione di laurea",
+    sessOpts: {
+      estiva: "Estiva",
+      autunnale: "Autunnale",
+      invernale: "Invernale",
+      fuoricorso: "Fuori corso",
+    },
+    brkInCorso: "+ In corso",
+    notApplicable: "non prevista",
     sessions: {
       nessuna: "Nessuna",
       straordinaria: "Straordinaria",
@@ -245,6 +253,14 @@ const TRANSLATIONS = {
     honorsNote: "Honors (cum laude) require a unanimous vote of the committee.",
     bonusTitle: "Bonuses",
     sessionLabel: "Graduation session",
+    sessOpts: {
+      estiva: "Summer",
+      autunnale: "Autumn",
+      invernale: "Winter",
+      fuoricorso: "Off-track",
+    },
+    brkInCorso: "+ On-time",
+    notApplicable: "not available",
     sessions: {
       nessuna: "None",
       straordinaria: "Extraordinary",
@@ -289,16 +305,6 @@ const TRANSLATIONS = {
   },
 };
 
-// Sessioni di laurea con relativo bonus (il nome arriva dalle traduzioni)
-const SESSIONS = [
-  { id: "nessuna", pts: 0 },
-  { id: "straordinaria", pts: 1 },
-  { id: "invernale", pts: 2 },
-  { id: "primaverile", pts: 2 },
-  { id: "estiva", pts: 2 },
-  { id: "autunnale", pts: 3 },
-];
-
 // Fasce qualitative dell'elaborato finale (label dalle traduzioni)
 const THESIS_BANDS = [
   { key: "sufficiente", range: "0", min: 0 },
@@ -318,132 +324,132 @@ const FACULTIES = [
     id: "generica",
     it: "Generica / altro corso",
     en: "Generic / other programme",
-    tri: { thesisMax: 6, lode30: 33 },
-    mag: { thesisMax: 8, lode30: 33 },
+    tri: { thesisMax: 6, lode30: 33, inCorso: { estiva: 1, autunnale: 1, invernale: 1 }, erasmus: 2 },
+    mag: { thesisMax: 8, lode30: 33, inCorso: { estiva: 1, autunnale: 1, invernale: 1 }, erasmus: 2 },
     src: null,
     note: {
-      it: "Valori generici (media ponderata ×110/30, 30 e lode = 33, punti tesi 6/8). Le regole reali variano per corso: scegli la tua facoltà o verifica il regolamento del tuo corso.",
-      en: "Generic values (weighted avg ×110/30, 30 with honors = 33, thesis points 6/8). Real rules vary by programme: pick your faculty or check your programme regulation.",
+      it: "Valori generici (media ponderata ×110/30, 30 e lode = 33, punti tesi 6/8, in corso +1, Erasmus +2). Le regole reali variano molto per corso: scegli la tua facoltà o verifica il regolamento del tuo corso.",
+      en: "Generic values (weighted avg ×110/30, 30 with honors = 33, thesis 6/8, on-time +1, Erasmus +2). Real rules vary a lot by programme: pick your faculty or check your programme regulation.",
     },
   },
   {
     id: "giurisprudenza",
     it: "Giurisprudenza",
     en: "Law",
-    tri: { thesisMax: 5, lode30: 31 },
-    mag: { thesisMax: 6, lode30: 30 },
+    tri: { thesisMax: 5, lode30: 31, inCorso: { estiva: 1, autunnale: 1, invernale: 1 }, erasmus: 1 },
+    mag: { thesisMax: 6, lode30: 30, inCorso: { estiva: 1, autunnale: 1, invernale: 1 }, erasmus: 1 },
     src: { url: "https://giurisprudenza.cdl.unimi.it/sites/la41/files/2021-12/Regolamento%20esami%20di%20laurea%20in%20Giurisprudenza%20NUOVO.pdf", date: "24/11/2021" },
     note: {
-      it: "30 e lode = 31 (triennale) / 30 (ciclo unico). Tesi: fino a 5 punti (6 solo eccezionale, ciclo unico). Bonus triennale: in corso +1, Erasmus/estero +1, moot/summer +1, tirocinio +1 (tot max 3). Ciclo unico: +1 (in corso oppure Erasmus). Lode a 110 unanime (ciclo unico: serve ≥1 lode in carriera).",
-      en: "30 cum laude = 31 (bachelor) / 30 (single-cycle). Thesis: up to 5 points (6 only exceptional, single-cycle). Bachelor bonuses: on-time +1, Erasmus/abroad +1, moot/summer +1, internship +1 (max 3). Single-cycle: +1 (on-time or Erasmus). Honors at 110, unanimous (single-cycle: needs ≥1 cum laude in career).",
+      it: "30 e lode = 31 (triennale) / 30 (ciclo unico). Tesi: triennale fino a 5, ciclo unico fino a 6. In corso: +1 (qualsiasi sessione, NON dipende dalla sessione). Erasmus +1; triennale anche moot/summer +1 e tirocinio +1 (tot bonus max 3, usa 'Bonus aggiuntivo'). ⚠️ Ciclo unico: in corso ed Erasmus sono ALTERNATIVI (max 1 combinato). Lode a 110 (ciclo unico: serve ≥1 lode in carriera).",
+      en: "30 cum laude = 31 (bachelor) / 30 (single-cycle). Thesis: bachelor up to 5, single-cycle up to 6. On-time: +1 (any session, NOT session-dependent). Erasmus +1; bachelor also moot/summer +1 and internship +1 (total bonus max 3, use 'Extra bonus'). ⚠️ Single-cycle: on-time and Erasmus are ALTERNATIVE (max 1 combined). Honors at 110 (single-cycle: needs ≥1 cum laude in career).",
     },
   },
   {
     id: "spes",
     it: "Scienze Politiche, Economiche e Sociali",
     en: "Political, Economic and Social Sciences",
-    tri: { thesisMax: 6, lode30: 33 },
-    mag: { thesisMax: 11, lode30: 33 },
+    tri: { thesisMax: 6, lode30: 33, inCorso: { estiva: 3, autunnale: 3, invernale: 1 }, erasmus: 1 },
+    mag: { thesisMax: 11, lode30: 33, inCorso: { estiva: 0, autunnale: 0, invernale: 0 }, erasmus: 1 },
     src: { url: "https://spo.cdl.unimi.it/sites/lb19/files/2025-03/Attribuzione_punteggi_prove_finali_%28v._dic%202024%29_1.pdf", date: "25/11/2024" },
     note: {
-      it: "30 e lode = 33. Tesi: triennale fino a 6, magistrale fino a 11. Bonus triennale: in corso +3 (sessione estiva/autunnale del 3° anno) o +1 (invernale); Erasmus/mobilità +1 (max 1). Magistrale: Erasmus/mobilità +1 (nessun bonus in corso). Lode a 110 unanime.",
-      en: "30 cum laude = 33. Thesis: bachelor up to 6, master up to 11. Bachelor bonuses: on-time +3 (summer/autumn session of 3rd year) or +1 (winter); Erasmus/mobility +1 (max 1). Master: Erasmus/mobility +1 (no on-time bonus). Honors at 110, unanimous.",
+      it: "30 e lode = 33. Tesi: triennale fino a 6, magistrale fino a 11. In corso (SOLO triennale): +3 se ti laurei nella sessione estiva o autunnale del 3° anno, +1 nella invernale. Erasmus/mobilità +1 (le varie mobilità non si sommano). Magistrale: nessun bonus in corso. Lode a 110 unanime.",
+      en: "30 cum laude = 33. Thesis: bachelor up to 6, master up to 11. On-time (BACHELOR only): +3 if you graduate in the summer or autumn session of the 3rd year, +1 in the winter one. Erasmus/mobility +1 (the various mobilities don't stack). Master: no on-time bonus. Honors at 110, unanimous.",
     },
   },
   {
     id: "scienze",
     it: "Scienze e Tecnologie",
     en: "Science and Technology",
-    tri: { thesisMax: 8, lode30: 30 },
-    mag: { thesisMax: 8, lode30: 30 },
+    tri: { thesisMax: 8, lode30: 33, inCorso: { estiva: 0, autunnale: 0, invernale: 0 }, erasmus: 0 },
+    mag: { thesisMax: 8, lode30: 33, inCorso: { estiva: 0, autunnale: 0, invernale: 0 }, erasmus: 0 },
     src: { url: "https://www.unimi.it/en/study/bachelor-and-master-study/graduation/procedures-and-deadlines-degree-programmes/graduating-science-and-technology", date: "2024–2025" },
     note: {
-      it: "⚠️ Quest'area varia molto per corso. Comune: media ponderata ×110/30; tesi indicativa fino a ~8. Alcuni corsi (Fisica, Chimica, Biologia) danno bonus per le lodi (~0,25/lode) e Biologia un bonus Erasmus. Informatica calcola sulla scala /30 (diverso). Verifica le linee guida del tuo corso.",
-      en: "⚠️ This area varies a lot by programme. Common: weighted avg ×110/30; thesis ~up to 8. Some programmes (Physics, Chemistry, Biology) give bonuses for cum-laude exams (~0.25 each) and Biology an Erasmus bonus. Computer Science computes on the /30 scale (different). Check your programme's guidelines.",
+      it: "⚠️ Area molto eterogenea: ogni corso ha regole proprie e NESSUN bonus dipende dalla sessione. Esempi: Chimica triennale +2 in corso (entro il 3° anno); Matematica triennale +2 in corso / +1 se ≤1 anno fuori corso; Biotecnologia +1 in corso + Erasmus +1; Fisica/Chimica/Biologia danno bonus per le lodi (~0,25–0,3 cad). Informatica usa la scala /30. Imposta i bonus del tuo corso nel campo 'Bonus aggiuntivo' e verifica le linee guida.",
+      en: "⚠️ Very heterogeneous area: each programme has its own rules and NO bonus depends on the session. Examples: Chemistry bachelor +2 on-time (within 3rd year); Maths bachelor +2 on-time / +1 if ≤1 year late; Biotech +1 on-time + Erasmus +1; Physics/Chemistry/Biology give cum-laude bonuses (~0.25–0.3 each). Computer Science uses the /30 scale. Enter your programme's bonuses in 'Extra bonus' and check the guidelines.",
     },
   },
   {
     id: "umanistici",
     it: "Studi Umanistici",
     en: "Humanities",
-    tri: { thesisMax: 6, lode30: 30 },
-    mag: { thesisMax: 6, lode30: 30 },
+    tri: { thesisMax: 6, lode30: 30, inCorso: { estiva: 0, autunnale: 0, invernale: 0 }, erasmus: 0 },
+    mag: { thesisMax: 6, lode30: 30, inCorso: { estiva: 0, autunnale: 0, invernale: 0 }, erasmus: 0 },
     src: { url: "https://www.unimi.it/sites/default/files/2022-06/linee%20guida%20facolt%C3%A0%20pubblicate.pdf", date: "17/06/2022" },
     note: {
-      it: "Media ponderata ×110/30 + punti tesi 0–6 (sia triennale sia magistrale). Nessun bonus documentato (in corso / lodi / Erasmus). Lode a 110 con voto unanime della commissione.",
-      en: "Weighted avg ×110/30 + thesis points 0–6 (both bachelor and master). No documented bonuses (on-time / cum laude / Erasmus). Honors at 110 with unanimous committee vote.",
+      it: "Voto = media ponderata ×110/30 + punti tesi 0–6 (sia triennale sia magistrale). NESSUN bonus: niente punti per laurea in corso, sessione, Erasmus o numero di lodi. Lode a 110 con voto unanime (decisa soprattutto sulla prova finale).",
+      en: "Grade = weighted avg ×110/30 + thesis points 0–6 (both bachelor and master). NO bonuses: no points for on-time graduation, session, Erasmus or number of cum-laude exams. Honors at 110 with unanimous vote (decided mainly on the final exam).",
     },
   },
   {
     id: "medicina",
     it: "Medicina",
     en: "Medicine",
-    tri: { thesisMax: 10, lode30: 30 },
-    mag: { thesisMax: 7, lode30: 30 },
+    tri: { thesisMax: 10, lode30: 30, inCorso: { estiva: 0, autunnale: 0, invernale: 0 }, erasmus: 0 },
+    mag: { thesisMax: 7, lode30: 30, inCorso: { estiva: 1, autunnale: 1, invernale: 0 }, erasmus: 0 },
     src: { url: "https://www.unimi.it/sites/default/files/2025-10/DCA%20LM-41%20Medicina%20e%20chirurgia%20-%20polo%20centrale%20(2025).pdf", date: "13/10/2025" },
     note: {
-      it: "Regole complesse e diverse tra Medicina e Chirurgia (ciclo unico) e Professioni Sanitarie (triennali). Med&Chir 2025: tesi ~7 + premialità fino a +7 (in corso +1, lodi 0,3/cad max 2, ricerca extra +2, OSCE +2); LODE a punteggio ≥ 113. Professioni sanitarie: tesi fino a 10 + prova abilitante fino a 10; lode = chi ha più lodi in carriera. Imposta i bonus manualmente.",
-      en: "Complex, differs between Medicine & Surgery (single-cycle) and Health Professions (bachelors). Med&Surg 2025: thesis ~7 + rewards up to +7 (on-time +1, cum laude 0.3 each max 2, extra research +2, OSCE +2); HONORS at score ≥ 113. Health professions: thesis up to 10 + qualifying exam up to 10; honors = most cum-laude in career. Enter bonuses manually.",
+      it: "Regole complesse e diverse per corso. Medicina e Chirurgia (LM-41, 2025): base + tesi fino a 7 + premialità fino a 7 (in corso +1 SOLO se ti laurei nella sessione estiva/autunnale; lodi 0,3 cad max 2; ricerca extra +2; OSCE +2). LODE a punteggio ≥ 113. Professioni sanitarie (triennali): base in /100 + tesi fino a 10 + prova abilitante fino a 10; lode a chi ha più lodi. Usa 'Bonus aggiuntivo' per lodi/OSCE/ricerca.",
+      en: "Complex rules, differ by programme. Medicine & Surgery (LM-41, 2025): base + thesis up to 7 + rewards up to 7 (on-time +1 ONLY if you graduate in the summer/autumn session; cum laude 0.3 each max 2; extra research +2; OSCE +2). HONORS at score ≥ 113. Health professions (bachelors): base in /100 + thesis up to 10 + qualifying exam up to 10; honors to the one with most cum-laude. Use 'Extra bonus' for cum-laude/OSCE/research.",
     },
   },
   {
     id: "farmacia",
     it: "Scienze del Farmaco",
     en: "Pharmacy",
-    tri: { thesisMax: 10, lode30: 30 },
-    mag: { thesisMax: 10, lode30: 30 },
+    tri: { thesisMax: 10, lode30: 33, inCorso: { estiva: 1, autunnale: 1, invernale: 1 }, erasmus: 1 },
+    mag: { thesisMax: 10, lode30: 33, inCorso: { estiva: 1, autunnale: 1, invernale: 1 }, erasmus: 1 },
     src: { url: "https://ctf.cdl.unimi.it/sites/le25/files/2025-04/Calcolo%20voto%20laurea-luglio%202025.pdf", date: "07/2025" },
     note: {
-      it: "Base = media ponderata ×110/30. Tesi: sperimentale fino a 10, semisperimentale 7,5, compilativa 5. Bonus: in corso +1 (ciclo unico/triennale) o +0,5 (magistrale 2 anni); Erasmus +1; tesi all'estero +2. LODE: base + (in corso+Erasmus+estero) ≥ 102,00 non arrotondato (i punti tesi NON contano per questa soglia).",
-      en: "Base = weighted avg ×110/30. Thesis: experimental up to 10, semi 7.5, compilation 5. Bonuses: on-time +1 (single-cycle/bachelor) or +0.5 (2-yr master); Erasmus +1; thesis abroad +2. HONORS: base + (on-time+Erasmus+abroad) ≥ 102.00 unrounded (thesis points do NOT count for this threshold).",
+      it: "Base = media ponderata ×110/30; 30 e lode = 33. Tesi: sperimentale fino a 10, semisperimentale 7,5, compilativa 5. In corso +1 (triennale/ciclo unico) o +0,5 (magistrale 2 anni), solo se ti laurei entro la sessione di marzo/aprile. Erasmus +1; tesi sperimentale all'estero +1 (≤6 mesi) o +2 (>6 mesi, usa 'Bonus aggiuntivo'). ⚠️ LODE: base + (in corso+Erasmus+estero) ≥ 102,00 non arrotondato (i punti tesi NON contano per la soglia).",
+      en: "Base = weighted avg ×110/30; 30 cum laude = 33. Thesis: experimental up to 10, semi 7.5, compilation 5. On-time +1 (bachelor/single-cycle) or +0.5 (2-yr master), only if you graduate by the March/April session. Erasmus +1; experimental thesis abroad +1 (≤6 months) or +2 (>6 months, use 'Extra bonus'). ⚠️ HONORS: base + (on-time+Erasmus+abroad) ≥ 102.00 unrounded (thesis points do NOT count for the threshold).",
     },
   },
   {
     id: "agraria",
     it: "Scienze Agrarie e Alimentari",
     en: "Agricultural and Food Sciences",
-    tri: { thesisMax: 6, lode30: 33 },
-    mag: { thesisMax: 10, lode30: 30 },
-    src: { url: "https://www.unimi.it/sites/default/files/2022-07/Regolamento_votolaurea_Agraria.pdf", date: "24/02/2022" },
+    tri: { thesisMax: 6, lode30: 33, inCorso: { estiva: 3, autunnale: 3, invernale: 1 }, erasmus: 1 },
+    mag: { thesisMax: 10, lode30: 30, inCorso: { estiva: 0, autunnale: 0, invernale: 0 }, erasmus: 0 },
+    src: { url: "https://scienzeagrarie.cdl.unimi.it/sites/lg28/files/2022-07/Regolamento_votolaurea_Agraria_3.pdf", date: "24/02/2022" },
     note: {
-      it: "Media ponderata ×110/30; 30 e lode = 33 (solo triennale). Tesi: triennale fino a 6, magistrale fino a 10 (include +1 per attività all'estero). Bonus triennale: in corso +3 (1ª/2ª sessione) o +1 (3ª); estero +1/+2 se in corso. Lode a 110 unanime.",
-      en: "Weighted avg ×110/30; 30 cum laude = 33 (bachelor only). Thesis: bachelor up to 6, master up to 10 (includes +1 for activity abroad). Bachelor bonuses: on-time +3 (1st/2nd session) or +1 (3rd); abroad +1/+2 if on-time. Honors at 110, unanimous.",
+      it: "Media ponderata ×110/30; 30 e lode = 33 (solo triennale). Tesi: triennale fino a 6, magistrale fino a 10 (include 1 punto per attività all'estero). In corso (SOLO triennale): +3 nella 1ª/2ª sessione (estiva/autunnale), +1 nella 3ª (invernale). Erasmus/estero +1 (1ª/2ª) o +2 (3ª, usa 'Bonus aggiuntivo'). Magistrale: nessun bonus in corso. Lode a 110 unanime.",
+      en: "Weighted avg ×110/30; 30 cum laude = 33 (bachelor only). Thesis: bachelor up to 6, master up to 10 (includes 1 point for activity abroad). On-time (BACHELOR only): +3 in the 1st/2nd session (summer/autumn), +1 in the 3rd (winter). Erasmus/abroad +1 (1st/2nd) or +2 (3rd, use 'Extra bonus'). Master: no on-time bonus. Honors at 110, unanimous.",
     },
   },
   {
     id: "veterinaria",
     it: "Medicina Veterinaria",
     en: "Veterinary Medicine",
-    tri: { thesisMax: 8, lode30: 30 },
-    mag: { thesisMax: 10, lode30: 30 },
+    tri: { thesisMax: 8, lode30: 33, inCorso: { estiva: 3, autunnale: 3, invernale: 2 }, erasmus: 3 },
+    mag: { thesisMax: 10, lode30: 30, inCorso: { estiva: 1, autunnale: 1, invernale: 1 }, erasmus: 1 },
     src: { url: "https://veterinaria.cdl.unimi.it/sites/lh15/files/2024-05/Regolamento%20della%20prova%20finale%20(immatricolati%20a%20partire%20dall'aa%202023-24).pdf", date: "09/05/2024" },
     note: {
-      it: "Medicina Veterinaria (ciclo unico, LM-42, dal 2023/24): tesi 8 + discussione 2 (=10), più premialità carriera max +2 (in corso +1, Erasmus +1, volontariato +1). Lode a 110 unanime. Gli altri corsi veterinari (Produzioni Animali) hanno regole diverse — verifica il tuo.",
-      en: "Veterinary Medicine (single-cycle, LM-42, from 2023/24): thesis 8 + discussion 2 (=10), plus career rewards max +2 (on-time +1, Erasmus +1, volunteering +1). Honors at 110, unanimous. Other veterinary programmes (Animal Production) differ — check yours.",
+      it: "Medicina Veterinaria (ciclo unico LM-42, dal 2023/24, livello Magistrale): tesi 8 + discussione 2 (=10); premialità carriera MAX +2 in totale tra in corso +1 (qualsiasi sessione), Erasmus +1, volontariato ≥200h +1. Lode a 110 unanime. Corsi di Produzioni Animali (livello Triennale): in corso +3 (1ª/2ª sessione) o +2 (3ª), Erasmus studio +3 / traineeship +2; 30 e lode = 33.",
+      en: "Veterinary Medicine (single-cycle LM-42, from 2023/24, 'Master' level here): thesis 8 + discussion 2 (=10); career rewards MAX +2 total among on-time +1 (any session), Erasmus +1, volunteering ≥200h +1. Honors at 110, unanimous. Animal Production programmes ('Bachelor' level): on-time +3 (1st/2nd session) or +2 (3rd), Erasmus study +3 / traineeship +2; 30 cum laude = 33.",
     },
   },
   {
     id: "motorie",
     it: "Scienze Motorie",
     en: "Exercise and Sports Sciences",
-    tri: { thesisMax: 8, lode30: 30 },
-    mag: { thesisMax: 12, lode30: 30 },
-    src: { url: "https://apps.unimi.it/files/manifesti/ita_manifesto_Z05of3_2026.pdf", date: "2025/26" },
+    tri: { thesisMax: 8, lode30: 33, inCorso: { estiva: 3, autunnale: 3, invernale: 1 }, erasmus: 1 },
+    mag: { thesisMax: 12, lode30: 33, inCorso: { estiva: 0, autunnale: 0, invernale: 0 }, erasmus: 1 },
+    src: { url: "https://gov.cdl.unimi.it/sites/lb66/files/2025-03/Attribuzione_punteggi_prove_finali_(v._dic%202024)_1.pdf", date: "25/11/2024" },
     note: {
-      it: "Punti prova finale: triennale fino a 8, magistrale fino a 12 (unico dato pubblicato dal corso). Base, lode e bonus seguono la regola generale d'Ateneo (media ponderata ×110/30, lode a 110 unanime): non pubblicati nei documenti del corso. Imposta i bonus manualmente se previsti.",
-      en: "Final-exam points: bachelor up to 8, master up to 12 (the only value the programme publishes). Base, honors and bonuses follow the general University rule (weighted avg ×110/30, honors at 110 unanimous): not published by the programme. Enter bonuses manually if applicable.",
+      it: "30 e lode = 33; media ponderata ×110/30. Tesi: triennale fino a 8, magistrale fino a 12. In corso (SOLO triennale): +3 nella sessione estiva o autunnale del 3° anno, +1 nella invernale. Erasmus/mobilità +1 (tutti i livelli). Magistrale: nessun bonus in corso. Lode a 110 (triennale: automatica se >110; magistrale: su richiesta del relatore).",
+      en: "30 cum laude = 33; weighted avg ×110/30. Thesis: bachelor up to 8, master up to 12. On-time (BACHELOR only): +3 in the summer or autumn session of the 3rd year, +1 in the winter one. Erasmus/mobility +1 (all levels). Master: no on-time bonus. Honors at 110 (bachelor: automatic if >110; master: on supervisor's request).",
     },
   },
   {
     id: "mediazione",
     it: "Mediazione Linguistica e Culturale",
     en: "Language Mediation and Intercultural Communication",
-    tri: { thesisMax: 3, lode30: 31 },
-    mag: { thesisMax: 8, lode30: 31 },
+    tri: { thesisMax: 3, lode30: 31, inCorso: { estiva: 1, autunnale: 1, invernale: 1 }, erasmus: 0 },
+    mag: { thesisMax: 8, lode30: 31, inCorso: { estiva: 0, autunnale: 0, invernale: 0 }, erasmus: 0 },
     src: { url: "https://mediazione.cdl.unimi.it/it/studiare/laurearsi/laurearsi-k21-kab", date: "2026" },
     note: {
-      it: "30 e lode = 31; media ponderata ×110/30. Triennale (K21-KAB): tesi 0–3, bonus in corso +1; lode a 110 + proposta del relatore + ≥1 lode in carriera. Magistrale (LM-38): punti tesi non pubblicati (valore indicativo 8) — verifica con il corso.",
-      en: "30 cum laude = 31; weighted avg ×110/30. Bachelor (K21-KAB): thesis 0–3, on-time bonus +1; honors at 110 + supervisor's proposal + ≥1 cum laude in career. Master (LM-38): thesis points not published (indicative 8) — check with the programme.",
+      it: "30 e lode = 31; media ponderata ×110/30. Triennale (K21-KAB): tesi 0–3; in corso +1 (entro la durata normale, NON dipende dalla sessione); nessun bonus Erasmus. Lode a 110 + proposta del relatore + ≥1 lode in carriera. Magistrale (LM-38): criteri non pubblicati (valori indicativi) — verifica con il corso.",
+      en: "30 cum laude = 31; weighted avg ×110/30. Bachelor (K21-KAB): thesis 0–3; on-time +1 (within normal duration, NOT session-dependent); no Erasmus bonus. Honors at 110 + supervisor's proposal + ≥1 cum laude in career. Master (LM-38): criteria not published (indicative values) — check with the programme.",
     },
   },
 ];
@@ -503,9 +509,8 @@ export default function CalcolatoreVotoLaurea() {
     newExam("", "30", "6"),
     newExam("", "", ""),
   ]);
-  const [sessionId, setSessionId] = useState("estiva");
+  const [session, setSession] = useState("estiva");
   const [erasmus, setErasmus] = useState(false);
-  const [laureando, setLaureando] = useState(false);
   const [bonusExtra, setBonusExtra] = useState("0");
   const [facultyId, setFacultyId] = useState("generica");
   const [level, setLevel] = useState("triennale");
@@ -654,14 +659,12 @@ export default function CalcolatoreVotoLaurea() {
     return { examCount: graded.length, totalCFU, media, base };
   }, [exams, lode30]);
 
-  const session = SESSIONS.find((s) => s.id === sessionId) || SESSIONS[0];
-  const sessionBonus = session.pts;
-  const erasmusBonus = erasmus ? 2 : 0;
-  const laureandoBonus = laureando ? 1 : 0;
+  const sessionBonus = session === "fuoricorso" ? 0 : preset.inCorso[session] || 0;
+  const erasmusBonus = erasmus ? preset.erasmus : 0;
   const extraBonus = Number.isFinite(parseFloat(bonusExtra))
     ? parseFloat(bonusExtra)
     : 0;
-  const bonusTotal = sessionBonus + erasmusBonus + laureandoBonus + extraBonus;
+  const bonusTotal = sessionBonus + erasmusBonus + extraBonus;
 
   const hasExams = calc.totalCFU > 0;
   const lordo = calc.base + bonusTotal + thesis;
@@ -684,9 +687,7 @@ export default function CalcolatoreVotoLaurea() {
   }, [calc.base, bonusTotal, thesisMax]);
 
   const bands = THESIS_BANDS.filter((b) => b.min <= thesisMax);
-  const sessionName = (id) => t.sessions[id];
-  const sessionOptionLabel = (s) =>
-    `${sessionName(s.id)} (${s.pts === 0 ? "0" : "+" + s.pts})`;
+  const SESSION_OPTS = ["estiva", "autunnale", "invernale", "fuoricorso"];
 
   // ---- Stili ----
   const S = {
@@ -1216,7 +1217,7 @@ export default function CalcolatoreVotoLaurea() {
               </div>
               {sessionBonus !== 0 && (
                 <div style={S.breakLine}>
-                  <span style={{ color: C.muted }}>{t.brkSession} {sessionName(session.id)}</span>
+                  <span style={{ color: C.muted }}>{t.brkInCorso} ({t.sessOpts[session]})</span>
                   <strong style={{ color: C.greenText }}>+{sessionBonus}</strong>
                 </div>
               )}
@@ -1224,12 +1225,6 @@ export default function CalcolatoreVotoLaurea() {
                 <div style={S.breakLine}>
                   <span style={{ color: C.muted }}>{t.brkErasmus}</span>
                   <strong style={{ color: C.greenText }}>+{erasmusBonus}</strong>
-                </div>
-              )}
-              {laureandoBonus !== 0 && (
-                <div style={S.breakLine}>
-                  <span style={{ color: C.muted }}>{t.brkLaureando}</span>
-                  <strong style={{ color: C.greenText }}>+{laureandoBonus}</strong>
                 </div>
               )}
               {extraBonus !== 0 && (
@@ -1275,22 +1270,32 @@ export default function CalcolatoreVotoLaurea() {
               <select
                 id="sessione"
                 style={S.input}
-                value={sessionId}
-                onChange={(ev) => setSessionId(ev.target.value)}
+                value={session}
+                onChange={(ev) => setSession(ev.target.value)}
               >
-                {SESSIONS.map((s) => (
-                  <option key={s.id} value={s.id}>{sessionOptionLabel(s)}</option>
-                ))}
+                {SESSION_OPTS.map((s) => {
+                  const pts = s === "fuoricorso" ? 0 : preset.inCorso[s] || 0;
+                  return (
+                    <option key={s} value={s}>
+                      {t.sessOpts[s]}{pts ? ` (+${pts})` : ""}
+                    </option>
+                  );
+                })}
               </select>
             </div>
 
             <label style={S.checkRow}>
-              <input type="checkbox" checked={erasmus} onChange={(ev) => setErasmus(ev.target.checked)} style={{ accentColor: ACCENT, width: 16, height: 16 }} />
-              {t.erasmusLabel} <span style={{ color: C.greenText, fontWeight: 700 }}>+2 {t.pt}</span>
-            </label>
-            <label style={S.checkRow}>
-              <input type="checkbox" checked={laureando} onChange={(ev) => setLaureando(ev.target.checked)} style={{ accentColor: ACCENT, width: 16, height: 16 }} />
-              {t.laureandoLabel} <span style={{ color: C.greenText, fontWeight: 700 }}>+1 {t.pt}</span>
+              <input
+                type="checkbox"
+                checked={erasmus && !!preset.erasmus}
+                disabled={!preset.erasmus}
+                onChange={(ev) => setErasmus(ev.target.checked)}
+                style={{ accentColor: ACCENT, width: 16, height: 16 }}
+              />
+              {t.erasmusLabel}{" "}
+              <span style={{ color: preset.erasmus ? C.greenText : C.faint, fontWeight: 700 }}>
+                {preset.erasmus ? `+${preset.erasmus} ${t.pt}` : `(${t.notApplicable})`}
+              </span>
             </label>
 
             <div style={{ ...S.field, marginTop: 12 }}>
