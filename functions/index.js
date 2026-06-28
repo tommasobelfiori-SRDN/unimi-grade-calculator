@@ -190,7 +190,7 @@ async function extractHandler(req, res) {
       content.push({ type: "text", text: PROMPT });
 
       const modelUsed = EXTRACT_MODEL.value() || "claude-sonnet-4-6";
-      const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY.value() });
+      const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY.value().trim() });
       const message = await client.messages.create({
         model: modelUsed,
         max_tokens: 8192,
