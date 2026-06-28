@@ -138,6 +138,8 @@ const TRANSLATIONS = {
     colCfu: "CFU",
     optional: "(facoltativo)",
     addExam: "+ Aggiungi esame",
+    legend30L: "= 30 e lode",
+    legendAP: "= idoneità o attività senza voto numerico (es. tirocini, prova di lingua): esclusa dalla media",
     totExams: "Esami (no AP)",
     totCfu: "CFU totali",
     totAvg: "Media ponderata",
@@ -195,7 +197,7 @@ const TRANSLATIONS = {
     maxTag: "(max)",
     footer:
       "Strumento indicativo. Le regole esatte (bonus, soglie, lode) variano per corso di laurea: verifica sempre il regolamento del tuo dipartimento.",
-    tooltip30L: "30 e Lode (vale 33)",
+    tooltip30L: "Esame con 30 e lode",
     tooltipAP: "Idoneità / Altre attività — escluso dalla media",
     removeExam: "Rimuovi esame",
     facultyTitle: "Corso di laurea / Facoltà",
@@ -239,6 +241,8 @@ const TRANSLATIONS = {
     colCfu: "Credits",
     optional: "(optional)",
     addExam: "+ Add exam",
+    legend30L: "= 30 with honors (30 e lode)",
+    legendAP: "= pass / activity with no numeric grade (e.g. internships, language test): excluded from the average",
     totExams: "Exams (excl. AP)",
     totCfu: "Total credits",
     totAvg: "Weighted average",
@@ -296,7 +300,7 @@ const TRANSLATIONS = {
     maxTag: "(max)",
     footer:
       "Indicative tool. The exact rules (bonuses, thresholds, honors) vary by degree program: always check your department's regulations.",
-    tooltip30L: "30 with honors (counts as 33)",
+    tooltip30L: "Exam passed with 30 cum laude",
     tooltipAP: "Pass/Idoneità — excluded from the average",
     removeExam: "Remove exam",
     facultyTitle: "Degree programme / Faculty",
@@ -1180,6 +1184,13 @@ export default function CalcolatoreVotoLaurea() {
             <button type="button" style={S.addBtn} onClick={addExam}>
               {t.addExam}
             </button>
+
+            {/* Legenda 30L / AP */}
+            <div style={{ fontSize: 12, color: C.muted, marginTop: 12, lineHeight: 1.6 }}>
+              <span style={{ color: C.accentText, fontWeight: 700 }}>30L</span> {t.legend30L}
+              <br />
+              <span style={{ color: C.greenText, fontWeight: 700 }}>AP</span> {t.legendAP}
+            </div>
 
             {/* Totali in tempo reale */}
             <div style={S.totalsRow}>
