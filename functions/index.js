@@ -234,8 +234,12 @@ async function extractHandler(req, res) {
 
 exports.extract = onRequest(
   {
-    region: "us-central1",
-    cors: true, // riflette l'origine; restringi con cors: ["https://tuo-sito"] se vuoi
+    region: "europe-west1",
+    // Solo i domini del sito (App Check resta la protezione principale).
+    cors: [
+      "https://uniti-grade-calculator.web.app",
+      "https://uniti-grade-calculator.firebaseapp.com",
+    ],
     secrets: [ANTHROPIC_API_KEY],
     timeoutSeconds: 120,
     memory: "512MiB",
