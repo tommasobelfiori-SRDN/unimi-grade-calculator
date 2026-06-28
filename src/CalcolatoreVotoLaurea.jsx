@@ -115,6 +115,7 @@ const TRANSLATIONS = {
       "Sito non ufficiale, non affiliato all'Università degli Studi di Milano. Strumento puramente indicativo.",
     themeDark: "Scuro",
     themeLight: "Chiaro",
+    contact: "Contattami",
     importTitle: "Importa la tua carriera (PDF o screenshot)",
     importDesc:
       "Carica la scheda “carriera” (da SIFA / UNIMIA): l'intelligenza artificiale legge il documento e compila automaticamente la tabella degli esami, così non devi inserirli a mano uno a uno.",
@@ -215,6 +216,7 @@ const TRANSLATIONS = {
       "Unofficial tool, not affiliated with the University of Milan. For guidance only.",
     themeDark: "Dark",
     themeLight: "Light",
+    contact: "Contact me",
     importTitle: "Import your transcript (PDF or screenshot)",
     importDesc:
       "Upload your academic transcript: the AI reads the document and automatically fills in the exam table, so you don't have to enter them one by one.",
@@ -1406,9 +1408,28 @@ export default function CalcolatoreVotoLaurea() {
           </div>
         </div>
 
-        <p style={{ textAlign: "center", color: C.faint, fontSize: 12, margin: "18px 0 8px" }}>
+        <p style={{ textAlign: "center", color: C.faint, fontSize: 12, margin: "18px 0 10px" }}>
           {t.footer}
         </p>
+        <div style={{ textAlign: "center", margin: "0 0 12px" }}>
+          <a
+            href="mailto:tommaso.belfiori@icloud.com?subject=Calcolatore%20Voto%20di%20Laurea%20UniMi"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 7,
+              fontSize: 13,
+              fontWeight: 600,
+              color: C.accentText,
+              textDecoration: "none",
+              border: `1px solid ${C.border}`,
+              borderRadius: 999,
+              padding: "8px 16px",
+            }}
+          >
+            ✉️ {t.contact}
+          </a>
+        </div>
       </div>
     </div>
   );
