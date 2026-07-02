@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { getAppCheckToken } from "./appCheck";
 
 /*
@@ -483,6 +483,25 @@ const newExam = (name = "", voto = "", cfu = "") => ({
   special: null, // null | "30L" | "AP"
 });
 
+const SESSION_OPTS = ["estiva", "autunnale", "invernale", "fuoricorso"];
+
+// ---------------------------------------------------------------------------
+// Persistenza locale: esami e preferenze sopravvivono al refresh della pagina.
+// Nessun dato lascia il browser.
+// ---------------------------------------------------------------------------
+const LS_KEY = "unimi-grade-calc:v1";
+
+function loadSaved() {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(LS_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (_e) {
+    return null;
+  }
+}
+const SAVED = loadSaved();
+
 // ---------------------------------------------------------------------------
 // Import carriera: i file vanno al backend, che custodisce la API key e chiama
 // l'AI. I visitatori non inseriscono alcuna chiave. (rewrite Hosting /api/extract)
@@ -501,30 +520,46 @@ function fileToBase64(file) {
 
 export default function CalcolatoreVotoLaurea() {
   // ---- Tema e lingua ----
-  const [theme, setTheme] = useState(() =>
-    typeof window !== "undefined" &&
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
+  const [theme, setTheme] = useState(() => {
+    if (SAVED?.theme === "dark" || SAVED?.theme === "light") return SAVED.theme;
+    return typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
-      : "light"
-  );
-  const [lang, setLang] = useState("it");
+      : "light";
+  });
+  const [lang, setLang] = useState(SAVED?.lang === "en" ? "en" : "it");
   const dark = theme === "dark";
   const C = THEMES[theme];
   const t = TRANSLATIONS[lang];
 
   // ---- Stato esami ----
-  const [exams, setExams] = useState(() => [
-    newExam("", "28", "9"),
-    newExam("", "30", "6"),
-    newExam("", "", ""),
-  ]);
-  const [session, setSession] = useState("estiva");
-  const [erasmus, setErasmus] = useState(false);
-  const [bonusExtra, setBonusExtra] = useState("0");
-  const [facultyId, setFacultyId] = useState("generica");
-  const [level, setLevel] = useState("triennale");
-  const [thesis, setThesis] = useState(0);
+  const [exams, setExams] = useState(() => {
+    if (Array.isArray(SAVED?.exams) && SAVED.exams.length) {
+      return SAVED.exams.map((e) => ({
+        ...newExam(String(e.name ?? ""), String(e.voto ?? ""), String(e.cfu ?? "")),
+        special: e.special === "30L" || e.special === "AP" ? e.special : null,
+      }));
+    }
+    return [newExam("", "28", "9"), newExam("", "30", "6"), newExam("", "", "")];
+  });
+  const [session, setSession] = useState(
+    SESSION_OPTS.includes(SAVED?.session) ? SAVED.session : "estiva"
+  );
+  const [erasmus, setErasmus] = useState(SAVED?.erasmus === true);
+  const [bonusExtra, setBonusExtra] = useState(
+    Number.isFinite(parseFloat(SAVED?.bonusExtra)) ? String(SAVED.bonusExtra) : "0"
+  );
+  const [facultyId, setFacultyId] = useState(
+    FACULTIES.some((f) => f.id === SAVED?.facultyId) ? SAVED.facultyId : "generica"
+  );
+  const [level, setLevel] = useState(
+    SAVED?.level === "magistrale" ? "magistrale" : "triennale"
+  );
+  const [thesis, setThesis] = useState(() => {
+    const v = parseInt(SAVED?.thesis, 10);
+    return Number.isFinite(v) ? Math.max(0, Math.min(12, v)) : 0;
+  });
 
   // Preset facoltà → punti tesi massimi e valore del "30 e lode" nella media
   const faculty = FACULTIES.find((f) => f.id === facultyId) || FACULTIES[0];
@@ -550,6 +585,58 @@ export default function CalcolatoreVotoLaurea() {
   useEffect(() => {
     setThesis((v) => Math.min(v, thesisMax));
   }, [thesisMax]);
+
+  // Salva esami e preferenze in localStorage a ogni modifica.
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        LS_KEY,
+        JSON.stringify({
+          exams: exams.map(({ name, voto, cfu, special }) => ({ name, voto, cfu, special })),
+          session,
+          erasmus,
+          bonusExtra,
+          facultyId,
+          level,
+          thesis,
+          theme,
+          lang,
+        })
+      );
+    } catch (_e) {
+      /* storage pieno o bloccato: ignora */
+    }
+  }, [exams, session, erasmus, bonusExtra, facultyId, level, thesis, theme, lang]);
+
+  // Sincronizza il tema con il browser: barra colore mobile, form/scrollbar,
+  // sfondo del body (evita il lampo bianco in overscroll col tema scuro).
+  useEffect(() => {
+    document
+      .querySelectorAll('meta[name="theme-color"]')
+      .forEach((m) => m.setAttribute("content", C.pageBg));
+    document.documentElement.style.colorScheme = theme;
+    document.body.style.background = C.pageBg;
+  }, [theme]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  // Su mobile, quando la card del risultato esce dallo schermo, compare una
+  // barra fissa in basso con il voto corrente.
+  const resultRef = useRef(null);
+  const [resultVisible, setResultVisible] = useState(true);
+  useEffect(() => {
+    const node = resultRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+    const obs = new IntersectionObserver(([entry]) =>
+      setResultVisible(entry.isIntersecting)
+    );
+    obs.observe(node);
+    return () => obs.disconnect();
+  }, []);
+  const scrollToResult = () =>
+    resultRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
 
   // ---- Stato import carriera (PDF/screenshot → backend → AI) ----
   const [files, setFiles] = useState([]);
@@ -697,7 +784,6 @@ export default function CalcolatoreVotoLaurea() {
   }, [calc.base, bonusTotal, thesisMax]);
 
   const bands = THESIS_BANDS.filter((b) => b.min <= thesisMax);
-  const SESSION_OPTS = ["estiva", "autunnale", "invernale", "fuoricorso"];
 
   // ---- Stili ----
   const S = {
@@ -707,6 +793,10 @@ export default function CalcolatoreVotoLaurea() {
       fontFamily: "system-ui, -apple-system, sans-serif",
       color: C.text,
       padding: isMobile ? "12px" : "24px",
+      // Su mobile lascia spazio alla barra fissa del risultato in basso.
+      paddingBottom: isMobile
+        ? "calc(84px + env(safe-area-inset-bottom))"
+        : "24px",
       boxSizing: "border-box",
       transition: "background 0.2s, color 0.2s",
     },
@@ -767,7 +857,8 @@ export default function CalcolatoreVotoLaurea() {
       padding: "8px 10px",
       border: `1px solid ${C.border}`,
       borderRadius: 8,
-      fontSize: 14,
+      // 16px su mobile: sotto quella soglia iOS Safari zooma al focus.
+      fontSize: isMobile ? 16 : 14,
       boxSizing: "border-box",
       fontFamily: "inherit",
       background: C.inputBg,
@@ -778,12 +869,20 @@ export default function CalcolatoreVotoLaurea() {
       padding: "8px 8px",
       border: `1px solid ${C.border}`,
       borderRadius: 8,
-      fontSize: 14,
+      fontSize: isMobile ? 16 : 14,
       boxSizing: "border-box",
       textAlign: "center",
       fontFamily: "inherit",
       background: C.inputBg,
       color: C.text,
+    },
+    miniLabel: {
+      fontSize: 11,
+      textTransform: "uppercase",
+      letterSpacing: 0.4,
+      color: C.muted,
+      fontWeight: 700,
+      marginBottom: 4,
     },
     addBtn: {
       marginTop: 12,
@@ -791,10 +890,11 @@ export default function CalcolatoreVotoLaurea() {
       color: "#fff",
       border: "none",
       borderRadius: 10,
-      padding: "10px 16px",
+      padding: isMobile ? "12px 16px" : "10px 16px",
       fontSize: 14,
       fontWeight: 600,
       cursor: "pointer",
+      width: isMobile ? "100%" : "auto",
     },
     primaryBtn: {
       background: ACCENT,
@@ -848,16 +948,17 @@ export default function CalcolatoreVotoLaurea() {
     }),
   };
 
+  // Su mobile i target sono più grandi (~44px, linee guida touch).
   const toggleBtn = (active, accent) => ({
     border: `1px solid ${active ? accent : C.border}`,
     background: active ? accent : C.ghostBg,
     color: active ? "#fff" : C.ghostText,
     borderRadius: 8,
-    padding: "7px 9px",
-    fontSize: 12,
+    padding: isMobile ? "11px 10px" : "7px 9px",
+    fontSize: isMobile ? 13 : 12,
     fontWeight: 700,
     cursor: "pointer",
-    minWidth: 38,
+    minWidth: isMobile ? 44 : 38,
   });
 
   // Pulsanti nell'header (sopra il gradiente)
@@ -985,7 +1086,8 @@ export default function CalcolatoreVotoLaurea() {
               type="button"
               style={{
                 ...S.primaryBtn,
-                padding: "11px 20px",
+                padding: isMobile ? "12px 20px" : "11px 20px",
+                width: isMobile ? "100%" : "auto",
                 opacity: importing ? 0.7 : 1,
                 cursor: importing ? "default" : "pointer",
               }}
@@ -1047,19 +1149,19 @@ export default function CalcolatoreVotoLaurea() {
                 ))}
               </select>
             </div>
-            <div>
+            <div style={{ flex: isMobile ? "1 1 100%" : "0 0 auto" }}>
               <label style={S.label}>{t.levelLabel}</label>
               <div style={{ display: "flex", gap: 8 }}>
                 <button
                   type="button"
-                  style={{ ...S.primaryBtn, background: level === "triennale" ? ACCENT : C.ghostBg, color: level === "triennale" ? "#fff" : C.ghostText, border: "1px solid " + (level === "triennale" ? ACCENT : C.border) }}
+                  style={{ ...S.primaryBtn, flex: isMobile ? 1 : "0 0 auto", background: level === "triennale" ? ACCENT : C.ghostBg, color: level === "triennale" ? "#fff" : C.ghostText, border: "1px solid " + (level === "triennale" ? ACCENT : C.border) }}
                   onClick={() => setLevel("triennale")}
                 >
                   {t.triennale}
                 </button>
                 <button
                   type="button"
-                  style={{ ...S.primaryBtn, background: level === "magistrale" ? ACCENT : C.ghostBg, color: level === "magistrale" ? "#fff" : C.ghostText, border: "1px solid " + (level === "magistrale" ? ACCENT : C.border) }}
+                  style={{ ...S.primaryBtn, flex: isMobile ? 1 : "0 0 auto", background: level === "magistrale" ? ACCENT : C.ghostBg, color: level === "magistrale" ? "#fff" : C.ghostText, border: "1px solid " + (level === "magistrale" ? ACCENT : C.border) }}
                   onClick={() => setLevel("magistrale")}
                 >
                   {t.magistrale}
@@ -1092,39 +1194,60 @@ export default function CalcolatoreVotoLaurea() {
           {/* Tabella esami */}
           <div style={S.card}>
             <h2 style={S.cardTitle}>{t.examsTitle}</h2>
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 420 }}>
-                <thead>
-                  <tr>
-                    <th style={S.th}>{t.colName}</th>
-                    <th style={{ ...S.th, width: 170 }}>{t.colGrade}</th>
-                    <th style={{ ...S.th, width: 80 }}>{t.colCfu}</th>
-                    <th style={{ ...S.th, width: 40 }} />
-                  </tr>
-                </thead>
-                <tbody>
-                  {exams.map((e) => {
-                    const isAP = e.special === "AP";
-                    const is30L = e.special === "30L";
-                    return (
-                      <tr key={e.id}>
-                        <td style={S.td}>
-                          <input
-                            style={S.input}
-                            type="text"
-                            placeholder={t.optional}
-                            value={e.name}
-                            onChange={(ev) => updateExam(e.id, { name: ev.target.value })}
-                          />
-                        </td>
-                        <td style={S.td}>
-                          <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+            {isMobile ? (
+              /* Su mobile la tabella diventa un elenco di schede: niente
+                 scroll orizzontale, tutti i campi visibili e raggiungibili. */
+              <div>
+                {exams.map((e) => {
+                  const isAP = e.special === "AP";
+                  const is30L = e.special === "30L";
+                  return (
+                    <div
+                      key={e.id}
+                      style={{
+                        border: `1px solid ${C.divider2}`,
+                        borderRadius: 10,
+                        padding: "10px 10px 12px",
+                        marginBottom: 10,
+                      }}
+                    >
+                      <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                        <input
+                          style={{ ...S.input, flex: 1 }}
+                          type="text"
+                          placeholder={`${t.colName} ${t.optional}`}
+                          aria-label={t.colName}
+                          value={e.name}
+                          onChange={(ev) => updateExam(e.id, { name: ev.target.value })}
+                        />
+                        <button
+                          type="button"
+                          aria-label={t.removeExam}
+                          onClick={() => removeExam(e.id)}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            color: C.faint,
+                            cursor: "pointer",
+                            padding: 10,
+                            display: "inline-flex",
+                          }}
+                        >
+                          <TrashIcon />
+                        </button>
+                      </div>
+                      <div style={{ display: "flex", gap: 16, marginTop: 10, flexWrap: "wrap" }}>
+                        <div>
+                          <div style={S.miniLabel}>{t.colGrade}</div>
+                          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                             <input
-                              style={{ ...S.smallInput, width: 56, opacity: isAP || is30L ? 0.4 : 1 }}
+                              style={{ ...S.smallInput, width: 64, opacity: isAP || is30L ? 0.4 : 1 }}
                               type="number"
+                              inputMode="numeric"
                               min={18}
                               max={30}
                               placeholder="18–30"
+                              aria-label={t.colGrade}
                               disabled={isAP || is30L}
                               value={is30L || isAP ? "" : e.voto}
                               onChange={(ev) => updateExam(e.id, { voto: ev.target.value })}
@@ -1146,40 +1269,120 @@ export default function CalcolatoreVotoLaurea() {
                               AP
                             </button>
                           </div>
-                        </td>
-                        <td style={S.td}>
+                        </div>
+                        <div>
+                          <div style={S.miniLabel}>{t.colCfu}</div>
                           <input
-                            style={S.smallInput}
+                            style={{ ...S.smallInput, width: 64 }}
                             type="number"
+                            inputMode="decimal"
                             min={0}
                             placeholder="6"
+                            aria-label={t.colCfu}
                             value={e.cfu}
                             onChange={(ev) => updateExam(e.id, { cfu: ev.target.value })}
                           />
-                        </td>
-                        <td style={{ ...S.td, textAlign: "center" }}>
-                          <button
-                            type="button"
-                            aria-label={t.removeExam}
-                            onClick={() => removeExam(e.id)}
-                            style={{
-                              background: "none",
-                              border: "none",
-                              color: C.faint,
-                              cursor: "pointer",
-                              padding: 4,
-                              display: "inline-flex",
-                            }}
-                          >
-                            <TrashIcon />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 420 }}>
+                  <thead>
+                    <tr>
+                      <th style={S.th}>{t.colName}</th>
+                      <th style={{ ...S.th, width: 170 }}>{t.colGrade}</th>
+                      <th style={{ ...S.th, width: 80 }}>{t.colCfu}</th>
+                      <th style={{ ...S.th, width: 40 }} />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {exams.map((e) => {
+                      const isAP = e.special === "AP";
+                      const is30L = e.special === "30L";
+                      return (
+                        <tr key={e.id}>
+                          <td style={S.td}>
+                            <input
+                              style={S.input}
+                              type="text"
+                              placeholder={t.optional}
+                              aria-label={t.colName}
+                              value={e.name}
+                              onChange={(ev) => updateExam(e.id, { name: ev.target.value })}
+                            />
+                          </td>
+                          <td style={S.td}>
+                            <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                              <input
+                                style={{ ...S.smallInput, width: 56, opacity: isAP || is30L ? 0.4 : 1 }}
+                                type="number"
+                                inputMode="numeric"
+                                min={18}
+                                max={30}
+                                placeholder="18–30"
+                                aria-label={t.colGrade}
+                                disabled={isAP || is30L}
+                                value={is30L || isAP ? "" : e.voto}
+                                onChange={(ev) => updateExam(e.id, { voto: ev.target.value })}
+                              />
+                              <button
+                                type="button"
+                                style={toggleBtn(is30L, ACCENT)}
+                                onClick={() => toggleSpecial(e.id, "30L")}
+                                title={t.tooltip30L}
+                              >
+                                30L
+                              </button>
+                              <button
+                                type="button"
+                                style={toggleBtn(isAP, GREEN)}
+                                onClick={() => toggleSpecial(e.id, "AP")}
+                                title={t.tooltipAP}
+                              >
+                                AP
+                              </button>
+                            </div>
+                          </td>
+                          <td style={S.td}>
+                            <input
+                              style={S.smallInput}
+                              type="number"
+                              inputMode="decimal"
+                              min={0}
+                              placeholder="6"
+                              aria-label={t.colCfu}
+                              value={e.cfu}
+                              onChange={(ev) => updateExam(e.id, { cfu: ev.target.value })}
+                            />
+                          </td>
+                          <td style={{ ...S.td, textAlign: "center" }}>
+                            <button
+                              type="button"
+                              aria-label={t.removeExam}
+                              onClick={() => removeExam(e.id)}
+                              style={{
+                                background: "none",
+                                border: "none",
+                                color: C.faint,
+                                cursor: "pointer",
+                                padding: 4,
+                                display: "inline-flex",
+                              }}
+                            >
+                              <TrashIcon />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
 
             <button type="button" style={S.addBtn} onClick={addExam}>
               {t.addExam}
@@ -1216,7 +1419,7 @@ export default function CalcolatoreVotoLaurea() {
           </div>
 
           {/* Risultato */}
-          <div style={S.card}>
+          <div style={S.card} ref={resultRef}>
             <h2 style={S.cardTitle}>{t.resultTitle}</h2>
             <div style={{ textAlign: "center", padding: "6px 0 10px" }}>
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 6 }}>
@@ -1442,6 +1645,45 @@ export default function CalcolatoreVotoLaurea() {
           </a>
         </div>
       </div>
+
+      {/* ---- Barra fissa risultato (solo mobile, quando la card è fuori schermo) ---- */}
+      {isMobile && hasExams && !resultVisible && (
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={scrollToResult}
+          onKeyDown={(ev) => {
+            if (ev.key === "Enter" || ev.key === " ") {
+              ev.preventDefault();
+              scrollToResult();
+            }
+          }}
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 50,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 12,
+            padding: "10px 16px",
+            paddingBottom: "calc(10px + env(safe-area-inset-bottom))",
+            background: C.card,
+            borderTop: `1px solid ${C.divider2}`,
+            boxShadow: "0 -2px 14px rgba(0,0,0,0.18)",
+            cursor: "pointer",
+          }}
+        >
+          <span style={{ fontSize: 13, fontWeight: 700, color: C.muted }}>
+            {t.resultTitle}
+          </span>
+          <span style={{ fontSize: 20, fontWeight: 800, color: gradeColor(finalGrade, dark) }}>
+            {isLode ? t.honors110 : `${displayGrade} / 110`}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

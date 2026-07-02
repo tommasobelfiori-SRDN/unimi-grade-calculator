@@ -2,9 +2,36 @@
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#4338ca" />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content="#f3f0ff"
+    />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content="#13111f"
+    />
+    <style>
+      html {
+        color-scheme: light dark;
+      }
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+      button,
+      input,
+      select,
+      a,
+      label {
+        touch-action: manipulation;
+      }
+    </style>
     <title>Calcolatore Voto di Laurea — UniMi</title>
     <meta
       name="description"
